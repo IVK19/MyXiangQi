@@ -1,0 +1,9 @@
+key
+key.pub
+.idea/
+*venv/
+*.pyc
+*.csv
+*.xlsx
+db.*
+__pycache__/
