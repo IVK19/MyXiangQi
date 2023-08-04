@@ -256,12 +256,12 @@ def score_board(gs):
                         piece_position_score = piece_position_scores[square[1]][row][col]
                 if gs.board[row][col][0] == 'r':
                     if gs.board[row][col] == 'rp' and row <= 4:
-                        score += 2 + piece_position_score * .1
+                        score += 2 + piece_position_score
                     else:
                         score += piece_score[gs.board[row][col][1]] + piece_position_score * .1
                 elif gs.board[row][col][0] == 'b':
                     if gs.board[row][col] == 'bp' and row >= 5:
-                        score -= 2 - piece_position_score * .1
+                        score -= 2 - piece_position_score
                     else:
                         score -= piece_score[gs.board[row][col][1]] - piece_position_score * .1
     return score

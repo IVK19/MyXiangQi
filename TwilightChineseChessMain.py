@@ -3,6 +3,8 @@ import TwilightChineseChessEngine
 import SmartMoveFinder
 from multiprocessing import Process, Queue
 import asyncio
+import random
+import copy
 
 
 WIDTH = 1499.2
@@ -121,6 +123,39 @@ async def main():
                             if not move_made:
                                 player_clicks = [sq_selected]
             elif e.type == p.KEYDOWN:
+                if e.key == p.K_q:
+                    if gs.move_log:
+                        move = gs.move_log[-1]
+                        if move.piece_captured != '.':
+                            captured_pieces.pop()
+                        piece = gs.board[move.end_row][move.end_col]
+                        if move.piece_moved[1] == 'u':
+                            gs.red_pieces.append(piece) if gs.red_to_move else gs.black_pieces.append(piece)
+                            random.shuffle(gs.red_pieces) if gs.red_to_move else random.shuffle(gs.black_pieces)
+                            gs.board[move.end_row][move.end_col] = 'ru' if gs.red_to_move else 'bu'
+                            gs.mirror_board[9 - move.end_row][8 - move.end_col] = 'ru' if gs.red_to_move else 'bu'
+                            gs1 = TwilightChineseChessEngine.GameState()
+                            gs.pos_board[move.start_row][move.start_col] = gs1.pos_board[move.start_row][move.start_col]
+                            gs.mirror_pos_board[9 - move.start_row][8 - move.start_col] = gs1.mirror_pos_board[9 - move.start_row][8 - move.start_col]
+                        gs.mirror_red_pieces = copy.deepcopy(gs.red_pieces)
+                        gs.mirror_black_pieces = copy.deepcopy(gs.black_pieces)
+                        gs.undo_move()
+                        if moves_counter > 1:
+                            moves_counter -= 1
+                        move_made = True
+                    if gs.mirror_move_log:
+                        gs.red_to_move = not gs.red_to_move
+                        gs.undo_mirror_move()
+                        if ai_thinking:
+                            move_finder_process.terminate()
+                            ai_thinking = False
+                        move_undone = False
+                    if len(gs.move_log) != 0 and not reversed_board:
+                        move_coords = gs.move_log[-1]
+                    elif len(gs.mirror_move_log) != 0 and reversed_board:
+                        move_coords = gs.mirror_move_log[-1]
+                    else:
+                        move_coords = None
                 if e.key == p.K_s:
                     reversed_board = not reversed_board
                     if reversed_board:

@@ -125,7 +125,6 @@ async def main():
                         if notation_counter:
                             notation_counter -= 1
                     if gs.mirror_move_log:
-                        move = gs.mirror_move_log[-1]
                         gs.red_to_move = not gs.red_to_move
                         gs.undo_mirror_move()
                         if ai_thinking:
